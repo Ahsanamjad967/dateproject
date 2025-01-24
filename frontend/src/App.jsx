@@ -1,7 +1,19 @@
 import { useState } from "react";
-import { ArrowRight, CrossIcon, MenuIcon, XIcon } from "lucide-react";
+import { ArrowRight, MenuIcon, XIcon } from "lucide-react";
+import { Controller, useForm } from "react-hook-form";
+import Input from "./components/Input";
 
 export default function App() {
+  const {
+    control,
+    setError,
+    register,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({ mode: "onChange" });
+
+  const onSubmit = (data) => console.log(data);
   const [mobileMenu, setMobileMenu] = useState(false);
   return (
     <>
@@ -16,7 +28,12 @@ export default function App() {
                 {item}
               </label>
             ))}
-            <button className=" bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white">
+            <button
+              onClick={() => {
+                console.log(JSON.parse(localStorage.getItem("ref")));
+              }}
+              className=" bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white"
+            >
               Register Now! <ArrowRight size={20} />{" "}
             </button>
           </div>
