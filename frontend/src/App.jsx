@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, MenuIcon, XIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
-import Input from "./components/Input";
-
+import Select from 'react-select';
 export default function App() {
+  const options = [
+    { value: "option1", label: "Option 1" },
+    { value: "option2", label: "Option 2" },
+    { value: "option3", label: "Option 3" },
+  ];
   const {
     control,
     setError,
@@ -12,8 +16,13 @@ export default function App() {
     formState: { errors },
     handleSubmit,
   } = useForm({ mode: "onChange" });
-
-  const onSubmit = (data) => console.log(data);
+const [selectf,setselectf]=useState('')
+const onSubmit = (data) => {
+  console.log("Form Data Submitted:", data);
+};
+  useEffect(()=>{
+console.log(selectf)
+  },[selectf])
   const [mobileMenu, setMobileMenu] = useState(false);
   return (
     <>
@@ -58,8 +67,8 @@ export default function App() {
             )}
           </div>
         </nav>
-        {mobileMenu && (
-          <div className="w-full h-screen absolute bg-white z-50 text-gray-600 ">
+        
+          <div className={(!mobileMenu?'opacity-0 ':'')+" w-full h-max absolute pb-3  duration-500 rounded-lg shadow-xl bg-white z-50 text-gray-600 "}>
             <div className="flex flex-col gap-4  items-center ">
               {["Home", "Feature", "Community", "Blog", "Pricing"].map(
                 (item) => (
@@ -73,11 +82,11 @@ export default function App() {
               </button>
             </div>
           </div>
-        )}
+        
       </header>
 
       <main>
-        <section className=" bg-gray-100 flex-col w-[100vw] h-[40%]    items-center justify-between">
+        <section className=" bg-gray-100 flex-col  mx-auto max-w-7xl h-[40%]    items-center justify-between">
           <div className="flex  py-2 px-5 items-center justify-center lg:gap-16  ">
             <div className="flex-col     ">
               <h1 className="text-darkgray font-semibold text-3xl md:text-5xl max-w-md  mb-4">
