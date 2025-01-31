@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { ArrowRight, MenuIcon, XIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
-import Select from 'react-select';
+import { FaArrowRight } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import StepperForm from "./components/stepper";
+import Input from "./components/Input";
+import OTPInput from "./components/OTP";
+
 export default function App() {
-  const options = [
-    { value: "option1", label: "Option 1" },
-    { value: "option2", label: "Option 2" },
-    { value: "option3", label: "Option 3" },
-  ];
+  const ref = useRef(null);
   const {
     control,
     setError,
@@ -16,24 +16,22 @@ export default function App() {
     formState: { errors },
     handleSubmit,
   } = useForm({ mode: "onChange" });
-const [selectf,setselectf]=useState('')
-const onSubmit = (data) => {
-  console.log("Form Data Submitted:", data);
-};
-  useEffect(()=>{
-console.log(selectf)
-  },[selectf])
+  const [selectf, setselectf] = useState("");
+  const onSubmit = (data) => {
+    console.log("Form Data Submitted:", data);
+  };
+
   const [mobileMenu, setMobileMenu] = useState(false);
   return (
     <>
-      <header className="relative  bg-white">
-        <nav className="h-[5rem]  text-[#4D4D4D] items-center max-md:justify-between max-md:px-4  flex justify-around">
+      <header className="relative bg-white">
+        <nav className="h-[5rem] text-[#4D4D4D] items-center max-md:justify-between max-md:px-4 flex justify-around">
           <div className="flex gap-[2px]">
-            <img src="./logo.svg" />
+            <img src="./logo.svg" alt="Logo" />
           </div>
-          <div className="flex max-md:hidden justify-between gap-4 items-center  ">
+          <div className="hidden md:flex justify-between gap-4 items-center">
             {["Home", "Feature", "Community", "Blog", "Pricing"].map((item) => (
-              <label className=" md:text-lg font-normal cursor-pointer">
+              <label key={item} className="md:text-lg font-normal cursor-pointer">
                 {item}
               </label>
             ))}
@@ -41,259 +39,76 @@ console.log(selectf)
               onClick={() => {
                 console.log(JSON.parse(localStorage.getItem("ref")));
               }}
-              className=" bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white"
+              className="bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white"
             >
-              Register Now! <ArrowRight size={20} />{" "}
+              Register Now! <ArrowRight size={20} />
             </button>
           </div>
-          <div className="md:hidden p-2 border-2 border-gray-50 ">
+          <div className="md:hidden p-2 border-2 border-gray-50">
             {!mobileMenu ? (
               <button
                 onClick={() => {
                   setMobileMenu(true);
                 }}
               >
-                <MenuIcon size={20}></MenuIcon>
+                <MenuIcon size={20} />
               </button>
             ) : (
               <button
                 onClick={() => {
                   setMobileMenu(false);
                 }}
-                className=""
               >
-                <XIcon size={20}></XIcon>
+                <XIcon size={20} />
               </button>
             )}
           </div>
         </nav>
-        
-          <div className={(!mobileMenu?'opacity-0 ':'')+" w-full h-max absolute pb-3  duration-500 rounded-lg shadow-xl bg-white z-50 text-gray-600 "}>
-            <div className="flex flex-col gap-4  items-center ">
-              {["Home", "Feature", "Community", "Blog", "Pricing"].map(
-                (item) => (
-                  <label className=" md:text-lg font-normal cursor-pointer ">
-                    {item}
-                  </label>
-                )
-              )}
-              <button className=" bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white">
-                Register Now! <ArrowRight size={20} />{" "}
-              </button>
-            </div>
+
+        <div
+          className={`${
+            !mobileMenu ? "hidden" : ""
+          } w-full h-max absolute pb-3 duration-500 rounded-lg shadow-xl bg-white z-50 text-gray-600`}
+        >
+          <div className="flex flex-col gap-4 items-center">
+            {["Home", "Feature", "Community", "Blog", "Pricing"].map((item) => (
+              <label key={item} className="md:text-lg font-normal cursor-pointer">
+                {item}
+              </label>
+            ))}
+            <button className="bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white">
+              Register Now! <FaArrowRight color="red" />
+            </button>
           </div>
-        
+        </div>
       </header>
 
       <main>
-        <section className=" bg-gray-100 flex-col  mx-auto max-w-7xl h-[40%]    items-center justify-between">
-          <div className="flex  py-2 px-5 items-center justify-center lg:gap-16  ">
-            <div className="flex-col     ">
-              <h1 className="text-darkgray font-semibold text-3xl md:text-5xl max-w-md  mb-4">
+        <section className="bg-gray-100 py-5">
+          <div className="flex flex-wrap items-center justify-center gap-16">
+            <div className="flex-col text-center md:text-left">
+              <h1 className="text-darkgray font-semibold text-3xl md:text-4xl lg:text-5xl max-w-md mb-4">
                 Lessons and insights{" "}
                 <span className="text-green-500">from 8 years</span>
               </h1>
-              <button className=" w-auto min-w-max    bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white">
-                Register Now! <ArrowRight size={20} />{" "}
+              <button className="w-auto min-w-max bg-green-600 flex items-center px-4 py-3 gap-2 rounded-lg text-white">
+                Register Now! <FaArrowRight />
               </button>
             </div>
-            <div className="">
-              <img src="./avatar.svg" />
+            <div>
+              <img src="./avatar.svg" alt="Avatar" />
             </div>
-          </div>
-          <div className="justify-self-center py-2  flex justify-center gap-2">
-            <div className="h-2 w-2 border-2 rounded-full bg-green-200"></div>
-            <div className="h-2 w-2 border-2 rounded-full "></div>
-            <div className="h-2 w-2 border-2 rounded-full "></div>
           </div>
         </section>
-
         <section className="mt-4">
           <div className="flex flex-col gap-4 items-center">
-            <h1 className="text-darkgray text-5xl font-normal  capitalize ">
+            <h1 className="text-darkgray text-5xl font-normal capitalize">
               our clients
             </h1>
-            <p className="text-darkgray">
-              {" "}
+            <p className="text-darkgray text-center">
               We have been working with some Fortune 500+ clients
             </p>
-            <div className="flex justify-evenly flex-wrap w-full mt-3">
-              {" "}
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2049)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M10.0458 10.6136L3.09497 17.4945C4.48526 18.8708 6.07345 20.0308 7.80502 20.9382C8.28364 22.195 9.03386 23.3737 10.0557 24.3852C13.9 28.1908 20.1328 28.1908 23.9771 24.3852C24.9989 23.3737 25.7491 22.195 26.2277 20.9381C27.9593 20.0308 29.5475 18.8708 30.9377 17.4945L23.9926 10.6192C23.9874 10.614 23.9823 10.6089 23.9771 10.6037C20.1328 6.7981 13.9 6.7981 10.0557 10.6037C10.0524 10.607 10.0491 10.6103 10.0458 10.6136ZM23.312 22.1797C21.2864 22.8564 19.16 23.2029 17.0164 23.2029C14.8727 23.2029 12.7464 22.8564 10.7208 22.1797C10.9403 22.4679 11.1826 22.7445 11.4478 23.0071C14.5232 26.0516 19.5095 26.0516 22.5849 23.0071C22.8501 22.7445 23.0925 22.4679 23.312 22.1797ZM11.5906 11.8441C12.1128 12.1856 12.6682 12.4779 13.2492 12.7162C14.4435 13.2059 15.7236 13.458 17.0164 13.458C18.3091 13.458 19.5892 13.2059 20.7835 12.7162C21.3646 12.4779 21.9199 12.1856 22.4422 11.8441C19.4051 8.98331 14.6276 8.98332 11.5906 11.8441Z"
-                    fill="#3B4158"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2049">
-                    <rect
-                      width="27.8428"
-                      height="19.4899"
-                      fill="white"
-                      transform="translate(3.09497 7.74951)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2046)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2046">
-                    <rect
-                      width="27.8428"
-                      height="27.8428"
-                      fill="white"
-                      transform="translate(3.01831 3.67969)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2049)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M10.0458 10.6136L3.09497 17.4945C4.48526 18.8708 6.07345 20.0308 7.80502 20.9382C8.28364 22.195 9.03386 23.3737 10.0557 24.3852C13.9 28.1908 20.1328 28.1908 23.9771 24.3852C24.9989 23.3737 25.7491 22.195 26.2277 20.9381C27.9593 20.0308 29.5475 18.8708 30.9377 17.4945L23.9926 10.6192C23.9874 10.614 23.9823 10.6089 23.9771 10.6037C20.1328 6.7981 13.9 6.7981 10.0557 10.6037C10.0524 10.607 10.0491 10.6103 10.0458 10.6136ZM23.312 22.1797C21.2864 22.8564 19.16 23.2029 17.0164 23.2029C14.8727 23.2029 12.7464 22.8564 10.7208 22.1797C10.9403 22.4679 11.1826 22.7445 11.4478 23.0071C14.5232 26.0516 19.5095 26.0516 22.5849 23.0071C22.8501 22.7445 23.0925 22.4679 23.312 22.1797ZM11.5906 11.8441C12.1128 12.1856 12.6682 12.4779 13.2492 12.7162C14.4435 13.2059 15.7236 13.458 17.0164 13.458C18.3091 13.458 19.5892 13.2059 20.7835 12.7162C21.3646 12.4779 21.9199 12.1856 22.4422 11.8441C19.4051 8.98331 14.6276 8.98332 11.5906 11.8441Z"
-                    fill="#3B4158"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2049">
-                    <rect
-                      width="27.8428"
-                      height="19.4899"
-                      fill="white"
-                      transform="translate(3.09497 7.74951)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2046)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2046">
-                    <rect
-                      width="27.8428"
-                      height="27.8428"
-                      fill="white"
-                      transform="translate(3.01831 3.67969)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2049)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M10.0458 10.6136L3.09497 17.4945C4.48526 18.8708 6.07345 20.0308 7.80502 20.9382C8.28364 22.195 9.03386 23.3737 10.0557 24.3852C13.9 28.1908 20.1328 28.1908 23.9771 24.3852C24.9989 23.3737 25.7491 22.195 26.2277 20.9381C27.9593 20.0308 29.5475 18.8708 30.9377 17.4945L23.9926 10.6192C23.9874 10.614 23.9823 10.6089 23.9771 10.6037C20.1328 6.7981 13.9 6.7981 10.0557 10.6037C10.0524 10.607 10.0491 10.6103 10.0458 10.6136ZM23.312 22.1797C21.2864 22.8564 19.16 23.2029 17.0164 23.2029C14.8727 23.2029 12.7464 22.8564 10.7208 22.1797C10.9403 22.4679 11.1826 22.7445 11.4478 23.0071C14.5232 26.0516 19.5095 26.0516 22.5849 23.0071C22.8501 22.7445 23.0925 22.4679 23.312 22.1797ZM11.5906 11.8441C12.1128 12.1856 12.6682 12.4779 13.2492 12.7162C14.4435 13.2059 15.7236 13.458 17.0164 13.458C18.3091 13.458 19.5892 13.2059 20.7835 12.7162C21.3646 12.4779 21.9199 12.1856 22.4422 11.8441C19.4051 8.98331 14.6276 8.98332 11.5906 11.8441Z"
-                    fill="#3B4158"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2049">
-                    <rect
-                      width="27.8428"
-                      height="19.4899"
-                      fill="white"
-                      transform="translate(3.09497 7.74951)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-              <svg
-                width="34"
-                height="35"
-                viewBox="0 0 34 35"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g clip-path="url(#clip0_211_2046)">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M9.97901 3.67969C13.8233 3.67969 16.9397 6.79609 16.9397 10.6404V3.67969H23.9004C27.7446 3.67969 30.8611 6.79609 30.8611 10.6404C30.8611 14.4846 27.7446 17.6011 23.9004 17.6011C27.7446 17.6011 30.8611 20.7175 30.8611 24.5618C30.8611 26.4706 30.0927 28.2 28.8484 29.4575L28.8224 29.4837L28.7993 29.5067C27.5415 30.7528 25.8108 31.5225 23.9004 31.5225C22.003 31.5225 20.2829 30.7633 19.0272 29.5321C19.0109 29.516 18.9946 29.4999 18.9784 29.4837C18.9632 29.4685 18.948 29.4532 18.9329 29.4378C17.7001 28.182 16.9397 26.4606 16.9397 24.5618C16.9397 28.406 13.8233 31.5225 9.97901 31.5225C6.13472 31.5225 3.01831 28.406 3.01831 24.5618V17.6011H9.97901C6.13472 17.6011 3.01831 14.4846 3.01831 10.6404C3.01831 6.79609 6.13472 3.67969 9.97901 3.67969ZM15.5476 10.6404C15.5476 13.7158 13.0544 16.2089 9.97901 16.2089V5.07183C13.0544 5.07183 15.5476 7.56495 15.5476 10.6404ZM29.469 24.5618C29.469 21.4863 26.9758 18.9932 23.9004 18.9932C20.825 18.9932 18.3318 21.4863 18.3318 24.5618H29.469ZM4.41045 18.9932V24.5618C4.41045 27.6372 6.90358 30.1303 9.97901 30.1303C13.0544 30.1303 15.5476 27.6372 15.5476 24.5618V18.9932H4.41045ZM18.3318 16.2089V5.07183H23.9004C26.9758 5.07183 29.469 7.56495 29.469 10.6404C29.469 13.7158 26.9758 16.2089 23.9004 16.2089H18.3318Z"
-                    fill="#263238"
-                  />
-                </g>
-                <defs>
-                  <clipPath id="clip0_211_2046">
-                    <rect
-                      width="27.8428"
-                      height="27.8428"
-                      fill="white"
-                      transform="translate(3.01831 3.67969)"
-                    />
-                  </clipPath>
-                </defs>
-              </svg>
-            </div>
+            <div className="flex justify-evenly flex-wrap w-full mt-3"></div>
           </div>
         </section>
       </main>
