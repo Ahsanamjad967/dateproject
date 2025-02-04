@@ -1,11 +1,21 @@
 import { useEffect, useReducer, useRef, useState } from "react";
+import { PersonStandingIcon, SearchIcon, Settings2 } from "lucide-react";
+import { VscKebabVertical } from "react-icons/vsc";
+import { RiChatNewLine } from "react-icons/ri";
 import {
-  ArrowRight,
-  MenuIcon,
-  PersonStandingIcon,
-  Settings2,
-  XIcon,
-} from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 import { FaArrowRight } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import StepperForm from "./components/stepper";
@@ -28,49 +38,126 @@ export default function App() {
   };
   const menuItems = [
     {
-      icon: <HiOutlineStatusOnline  size={30}/>,
+      icon: HiOutlineStatusOnline,
       size: 50,
       isActive: true,
     },
     {
-      icon: <HiOutlineStatusOnline size={30}/>,
+      icon: HiOutlineStatusOnline,
       size: 50,
       isActive: false,
     },
     {
-      icon: <HiOutlineStatusOnline size={30}/>,
+      icon: HiOutlineStatusOnline,
       size: 50,
       isActive: false,
     },
   ];
-  const [mobileMenu, setMobileMenu] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(true);
   return (
     <>
-      <header className=" bg-[#00a884] h-[8rem]"></header>
+      <header className="bg-[#00a884] max-md:hidden h-[8rem]"></header>
 
-      <main className="bg-[#0b141a] bg-opacity-10 h-[calc(100vh-8rem)]">
-        <div className="main absolute  2xl:inset-x-32 inset-0 2xl:inset-y-2 flex  bg-gray-50">
-          <div className="w-12 flex flex-col justify-between items-center py-5 bg-gray-50">
-            <div className="flex flex-col gap-2 cursor-pointer">
-              {menuItems.map((item) => (
-                <div className="relative p-2 hover:text-gray-700 transition-all text-gray-500">
-                  {item.icon}
-                  {item.isActive && (
-                    <div className="h-2 w-2 absolute bg-green-400  rounded-full right-1 top-0"></div>
-                  )}
+      <main className="bg-[#0b141a] bg-opacity-100 h-[calc(100vh-8rem)]   "></main>
+
+      <div className="absolute  2xl:inset-x-32 inset-0 z-50-0 2xl:inset-y-2 flex bg-gray-50 max-h-full ">
+        {/* Sidebar */}
+        <div className="min-w-[4rem] max-md:hidden max-w-[4rem] md:min-w-[5rem] flex flex-col justify-between items-center py-5 bg-gray-50">
+          <div className="flex flex-col gap-2 cursor-pointer">
+            {menuItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="relative p-2 hover:text-gray-700 transition-all text-gray-500"
+              >
+                <item.icon size={30} strokeWidth={1.5} />
+                {item.isActive && (
+                  <div className="h-2 w-2 absolute bg-green-400 rounded-full right-1 top-0"></div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 text-gray-500 cursor-pointer">
+            <Settings2 size={30} strokeWidth={1.5} />
+            <PersonStandingIcon size={30} strokeWidth={1.5} />
+          </div>
+        </div>
+
+        {/* Chat List */}
+        <div className="max-md:max-w-[100%]  md:w-[35%] lg:w-[30%] bg-white flex flex-col">
+          <div className="py-5 px-5">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <h1 className="font-bold text-lg text-gray-800">Chats</h1>
+              <div className="flex justify-center items-center text-gray-500 gap-4">
+                <RiChatNewLine size={15} strokeWidth={1.5} />
+                <VscKebabVertical size={15} strokeWidth={1.5} />
+              </div>
+            </div>
+
+            {/* Search Box */}
+            <div className="w-full p-3 flex items-center gap-4 mt-4 bg-gray-100 rounded-xl text-gray-700">
+              <SearchIcon className="text-gray-400" size={20} strokeWidth={1} />
+              <input
+                className="flex-1 bg-transparent focus:outline-none"
+                placeholder="Search here..."
+                type="search"
+              />
+            </div>
+
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2 mt-2 text-gray-600 font-normal">
+              {["All", "Unread", "Favourites", "Groups"].map((badge, idx) => (
+                <div
+                  key={idx}
+                  className={`${ 
+                    idx % 2 === 0 ? "bg-green-100" : "bg-gray-100"
+                  } py-2 px-4 rounded-full max-md:px-2 max-md:py-1`}
+                >
+                  {badge}
                 </div>
               ))}
             </div>
-            <div className="flex flex-col gap-2  text-gray-500 cursor-pointer">
-              <Settings2 size={30} />
-              <PersonStandingIcon size={30} />
-            </div>
           </div>
-          <div className=" flex-[0.5]  bg-white"></div>
-          <div className=" flex-1  bg-gradient-to-tr from-green-500 to-gray-50"></div>
+
+          {/* Chats */}
+          <div
+            className="flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden
+  [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-green-200 h-full px-5"
+          >
+            {Array.from({ length: 20 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="flex gap-2 items-center border-b h-20 py-2"
+              >
+                <img
+                  src="https://avatar.iran.liara.run/public/boy"
+                  alt="User"
+                  className="h-12 w-[3.5rem] rounded-full"
+                />
+                <div className="flex flex-col justify-center min-w-[80%]">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-lg font-light">Name</h1>
+                    <p className="text-gray-400 text-sm">Yesterday</p>
+                  </div>
+                  <p className="text-gray-600 font-light truncate w-full">
+                    <span className="font-medium">User:</span> Lorem ipsum dolor
+                    sit amet, consectetur adipisicing elit. Quae quaerat, neque
+                    ea, velit rerum ipsa earum natus facilis quam nesciunt
+                    voluptatem est consequatur, esse exercitationem. Optio modi
+                    rerum animi ad.
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
+
+        {/* Right Section */}
+        <div className="flex-1 bg-[url('/wp14199734.jpg')] hidden md:block "></div>
+      </div>
     </>
+
     // <>
     //   <header className="relative bg-white">
     //     <nav className="h-[5rem] text-[#4D4D4D] items-center max-md:justify-between max-md:px-4 flex justify-around">
@@ -179,9 +266,9 @@ export default function App() {
     //                 className="h-15 w-10 max-h-max"
     //                 src="https://avatar.iran.liara.run/public/boy"
     //               ></img>
-    //               <div className="h-full text-ellipsis overflow-hidden">
+    //               <div className="h-full  ">
     //                 <h1 className="text-2xl font-medium">Henry Micheal</h1>
-    //                 <p className=" text-ellipsis overflow-hidden">
+    //                 <p className="  ">
     //                   'This is ffrkfkrk cdcdcjkcfjcfjkcjkfcjfjfk Lorem ipsum
     //                   dolor sit amet consectetur adipisicing elit. Provident
     //                   nostrum necessitatibus vitae quos eveniet cumque voluptas
